@@ -1,5 +1,5 @@
 import { css } from "styled-components";
-import svgHeadingIcon from "../svg/others/heading-icon.svg";
+// import svgHeadingIcon from "../svg/others/heading-icon.svg";
 
 const postContentStyle = css`
   margin: 1.5em 0 1em;
@@ -53,7 +53,6 @@ const postContentStyle = css`
       display: inline-block;
       width: 14px;
       height: 19px;
-      background-image: url("${svgHeadingIcon}");
       background-size: contain;
       background-repeat: no-repeat;
     }

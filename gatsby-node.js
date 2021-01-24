@@ -2,7 +2,7 @@ const path = require("path")
 
 exports.createPages = async ({graphql, actions, reporter}) => {
     const {createPage} = actions
-    const blogresult = await graphql(`
+    const result = await graphql(`
     {
       allContentfulBlogModel(sort: { fields: publishDate, order: DESC }) {
         edges {
@@ -22,22 +22,50 @@ exports.createPages = async ({graphql, actions, reporter}) => {
       }
   }
   `)
-    if (blogresult.errors) {
+    if (result.errors) {
         reporter.panicOnBuild(`GraphQL のクエリでエラーが発生しました`)
         return
     }
     // 個別記事ページ生成
-    blogresult.data.allContentfulBlogModel.edges.forEach(({node, next, previous}) => {
+    // blogresult.data.allContentfulBlogModel.edges.forEach(({node, next, previous}) => {
+    //     createPage({
+    //         path: `${node.slug}`,
+    //         component: path.resolve(`./src/templates/blog_articlepage.js`),
+    //         context: {
+    //             id: node.id,
+    //             next,
+    //             previous,
+    //         },
+    //     })
+    // })
+
+    const posts = result.data.allContentfulBlogModel.edges;
+    console.log("result", result)
+    console.log("posts", posts)
+
+    posts.forEach(({node, next, previous}) => {
+        // const previous =
+        //   index === posts.length - 1 ? null : posts[index + 1].node;
+        // const next = index === 0 ? null : posts[index - 1].node;
+
+        // setup related posts
+        // get the posts that has same categories.
+        // let relatedPosts = allRelatedPosts[post.node.frontmatter.category];
+        // // remove myself
+        // relatedPosts = relatedPosts.filter(relatedPost => {
+        //     return !(relatedPost.node.fields.slug === post.node.fields.slug);
+        // });
+
         createPage({
             path: `${node.slug}`,
-            component: path.resolve(`./src/templates/blog_articlepage.js`),
+            component: path.resolve(`./src/templates/post.js`),
             context: {
                 id: node.id,
                 next,
                 previous,
-            },
-        })
-    })
+            }
+        });
+    });
 
     // const blogPostsPerPage = 6; // リスト系ページの1ページに表示する記事の数
     // const blogPosts = blogresult.data.allContentfulBlogModel.edges.length; //記事の総数
